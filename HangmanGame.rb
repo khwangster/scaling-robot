@@ -53,7 +53,7 @@ class HangmanGame
 
   def assertCanKeepGuessing
     if gameStatus != :KEEP_GUESSING
-      raise Exception.new("Cannot keep guessing in current game state: #{gameStatus}")
+      raise "Cannot keep guessing in current game state: #{gameStatus}"
     end
   end
 
