@@ -1,14 +1,14 @@
 
-class GuessLetter < Guess
+class GuessWord < Guess
   def initialize(guess)
     @guess = guess
   end
 
   def makeGuess(game)
-    game.guessLetter(@guess)
+    game.guessWord(@guess)
   end
 
   def to_s
-    "GuessWord[#{@guess}"
+    "GuessWord[#{@guess}]"
   end
 end

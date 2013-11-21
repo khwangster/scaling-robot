@@ -74,13 +74,22 @@ class Dictionary
 
   end # initialize
 
+  def find(string)
+    @all_words[string]
+  end
+
   def getWordsWithLetterAtPosition(letter, position)
-    @letter_positions[position][letter]
+    @letter_positions[position][letter] || Set.new
   end
 
   def getWordsWithLetter(letter)
     @contains_letter[letter] || Set.new
   end
+
+  def getWordWithLenth(length)
+    @word_length[length] || Set.new
+  end
+
 
 
   # TODO: remove position_sanity

@@ -9,6 +9,6 @@ class GuessLetter < Guess
   end
 
   def to_s
-    "GuessLetter[#{@guess}"
+    "GuessLetter[#{@guess}]"
   end
 end

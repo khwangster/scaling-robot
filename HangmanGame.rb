@@ -2,6 +2,7 @@ require 'set'
 
 class HangmanGame
 	MYSTERY_LETTER = '-'
+  # NOTE: access with HangmanGame::MYSTERY_LETTER
 
 	def initialize(secretWord, maxWrongGuesses)
     @correctlyGuessedLetters = Set.new
@@ -14,7 +15,7 @@ class HangmanGame
 
   def guessLetter(ch)
     assertCanKeepGuessing
-    ch.upcase!
+    ch = ch.upcase
     goodGuess = false
     @secretWord.length.times do |i|
       if @secretWord[i] == ch
@@ -33,7 +34,7 @@ class HangmanGame
 
   def guessWord(guess)
     assertCanKeepGuessing
-    guess.upcase!
+    guess = guess.upcase
 
     if guess == @secretWord
       @guessedSoFar.replace @secretWord
