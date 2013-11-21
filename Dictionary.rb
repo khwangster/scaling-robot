@@ -78,6 +78,10 @@ class Dictionary
     @letter_positions[position][letter]
   end
 
+  def getWordsWithLetter(letter)
+    @contains_letter[letter] || Set.new
+  end
+
 
   # TODO: remove position_sanity
   def position_sanity
