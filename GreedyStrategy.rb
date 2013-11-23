@@ -27,17 +27,21 @@ class GreedyStrategy < GuessingStrategy
     # only filter out letters that haven't already been filtered
     new_correct_letter = (game.getCorrectlyGuessedLetters - @last_known_state[:correctly_guessed_letters]).first
     if new_correct_letter
-      # only keep words that are of the right length and have letters in the right position
-      # there should only ever be one letter if there's a new letter
       (0...(game.getSecretWordLength)).each do |i|
         if game.getGuessedSoFar[i] == new_correct_letter
+          # only keep words that have the letter in the right position
           position_matching = @dictionary.getWordsWithLetterAtPosition(new_correct_letter, i)
           raise "No possible words" if position_matching.nil?
           possible_words = possible_words & position_matching
         end
+
+        if game.getGuessedSoFar[i] == HangmanGame::MYSTERY_LETTER
+          # remove words that have letter in non-revealed position
+          position_mismatch = @dictionary.getWordsWithLetterAtPosition(new_correct_letter, i)
+          possible_words = possible_words - position_mismatch
+        end
       end
-      # update correctly guessed letters state
-      # merge them to update existing copy instead of just referencing game's copy
+
       @last_known_state[:correctly_guessed_letters] << new_correct_letter
       return make_guess(game, possible_words)
     end
@@ -46,8 +50,6 @@ class GreedyStrategy < GuessingStrategy
     new_wrong_letter = (game.getIncorrectlyGuessedLetters - @last_known_state[:incorrectly_guessed_letters]).first
     if new_wrong_letter
       possible_words = possible_words - @dictionary.getWordsWithLetter(new_wrong_letter)
-
-      # update incorrectly guessed letters state
       @last_known_state[:incorrectly_guessed_letters] << new_wrong_letter
       return make_guess(game, possible_words)
     end
@@ -66,21 +68,14 @@ class GreedyStrategy < GuessingStrategy
   end #nextGuess
 
   def make_guess(game, possible_words)
-    puts "guessing from possible words: #{possible_words.size}"
     @last_known_state[:possible_words] = possible_words
 
     case possible_words.size
       when 1,2
         return GuessWord.new(possible_words.first.word)
       else
-        frequency = calc_letter_frequency(possible_words)
-
-        # remove already guessed letters
-        game.getAllGuessedLetters.each do |ch|
-          frequency.delete(ch)
-        end
-
-        return GuessLetter.new(pick_char(frequency))
+        frequency = calc_letter_frequency(possible_words, game.getAllGuessedLetters)
+        return GuessLetter.new(pick_most_used(frequency))
     end
   end
 
@@ -94,7 +89,7 @@ class GreedyStrategy < GuessingStrategy
     }
   end
 
-  def calc_letter_frequency(possible_words)
+  def calc_letter_frequency(possible_words, used_letters)
     frequency = {}
     possible_words.each do |word|
       word.unique_letters.each do |ch|
@@ -105,10 +100,15 @@ class GreedyStrategy < GuessingStrategy
         end
       end
     end
+
+    used_letters.each do |ch|
+      frequency.delete(ch)
+    end
+
     frequency
   end
 
-  def pick_char(frequency)
+  def pick_most_used(frequency)
     max = 0
     char = ''
     frequency.each do |key,value|
