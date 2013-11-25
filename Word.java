@@ -12,7 +12,6 @@ public class Word {
         for (int i=0; i<string.length(); i++) {
             uniqueLetters.add(this.word.charAt(i));
         }
-//        System.out.println("Creating new word:" + this.word);
     }
           
    

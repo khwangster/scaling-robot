@@ -18,7 +18,7 @@ class GreedyStrategy < GuessingStrategy
       # no guesses have been made yet
       # start possible words with words of right length
       @possible_words += @dictionary.word_length[game.getSecretWordLength]
-      raise "No possible words" if @possible_words.nil?
+      raise "No possible words" if @possible_words.empty?
       return make_guess(game)
     end
 
