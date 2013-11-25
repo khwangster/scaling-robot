@@ -11,7 +11,7 @@ require_relative 'Dictionary'
 def run(strategy, game)
   strategy.newGame
   while game.gameStatus == :KEEP_GUESSING
-    puts game
+    #puts game
     guess = strategy.nextGuess(game)
     #puts guess
     guess.makeGuess(game)

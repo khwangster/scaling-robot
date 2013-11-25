@@ -62,7 +62,7 @@ class GreedyStrategy < GuessingStrategy
 
     # one of the 4 if statements should be the only 4 possible outcomes
     raise 'No changes detected in game :('
-    return make_guess(game, @possible_words)
+    return make_guess(game)
   end #nextGuess
 
   def make_guess(game)
