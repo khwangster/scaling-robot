@@ -90,24 +90,4 @@ class Dictionary
     @word_length[length] || Set.new
   end
 
-
-
-  # TODO: remove position_sanity
-  def position_sanity
-    count = 1
-    @letter_positions.each do |hash|
-      print "pos:#{count} | "
-      hash.each do |k,v|
-        print "#{k}:{"
-        v.each do |word|
-          print "#{word} "
-        end
-        print "}"
-      end
-      count +=1
-      puts
-    end
-  end #position_sanity
-
-
 end

@@ -6,8 +6,6 @@ require_relative 'GuessWord'
 require_relative 'GreedyStrategy'
 require_relative 'Dictionary'
 
-require_relative 'QuickAndDirtyStrategy'
-
 # tested with ruby 1.9.3, 2.0.0-p247 (slowest), 2.1.0dev (faster), and rbx 2.2.1 (fastest)
 
 def run(strategy, game)
