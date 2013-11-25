@@ -12,6 +12,7 @@ public class GreedyStrategy implements GuessingStrategy {
 
     public GreedyStrategy(Dictionary d) {
         dictionary = d;
+        // strategy needs dictionary access to processed list of all possible words
     }
 
     @Override
@@ -19,6 +20,7 @@ public class GreedyStrategy implements GuessingStrategy {
 
         if (game.currentScore() == 0) {
             // no guesses have been made yet
+            // start possible words with words of right length
             possibleWords.addAll(dictionary.getWordsWithLength(game.getSecretWordLength()));
             if (possibleWords.isEmpty()) {
                 throw new RuntimeException("No possible words");
@@ -26,9 +28,11 @@ public class GreedyStrategy implements GuessingStrategy {
             return makeGuess(game);
         }
 
-        Set<Character> newCorrectlyGuessedLetters = new HashSet(game.getCorrectlyGuessedLetters());
+        // only filter out letters that haven't already been filtered
+        Set<Character> newCorrectlyGuessedLetters = new HashSet<>(game.getCorrectlyGuessedLetters());
         newCorrectlyGuessedLetters.removeAll(correctlyGuessedLetters);
         if (newCorrectlyGuessedLetters.size() > 0) {
+            // only keep words that have the letter in the right position
             Character newCorrectLetter = getOnlyChar(newCorrectlyGuessedLetters);
             for (int i=0; i<game.getSecretWordLength(); i++) {
                 if (game.getGuessedSoFar().charAt(i) == newCorrectLetter) {
@@ -36,6 +40,7 @@ public class GreedyStrategy implements GuessingStrategy {
                     possibleWords.retainAll(positionMatching);
                 }
                 
+                // remove words that have letter in non-revealed position
                 if (game.getGuessedSoFar().charAt(i) == HangmanGame.MYSTERY_LETTER) {
                     Set<Word> positionMismatch = dictionary.getWordsWithLetterAtPosition(newCorrectLetter, i);
                     possibleWords.removeAll(positionMismatch);
@@ -46,7 +51,8 @@ public class GreedyStrategy implements GuessingStrategy {
             return makeGuess(game);
         }
         
-        Set<Character> newWrongLetters = new HashSet(game.getIncorrectlyGuessedLetters());
+        // remove words containing wrong letters
+        Set<Character> newWrongLetters = new HashSet<>(game.getIncorrectlyGuessedLetters());
         newWrongLetters.removeAll(incorrectlyGuessedLetters);
         if (newWrongLetters.size() > 0) {
             Character newWrongLetter = getOnlyChar(newWrongLetters);
@@ -55,7 +61,8 @@ public class GreedyStrategy implements GuessingStrategy {
             return makeGuess(game);
         }
         
-        Set<String> newWrongWords = new HashSet(game.getIncorrectlyGuessedWords());
+        // remove wrong words
+        Set<String> newWrongWords = new HashSet<>(game.getIncorrectlyGuessedWords());
         newWrongWords.removeAll(incorrectlyGuessedWords);
         if (newWrongWords.size() > 0) {
             String newWrongWord = getOnlyWord(newWrongWords);
@@ -64,10 +71,12 @@ public class GreedyStrategy implements GuessingStrategy {
             return makeGuess(game);
         }
         
+        // one of the 4 if statements should be the only 4 possible outcomes
         throw new RuntimeException("No changes detected in game");
     }
 
     public void newGame() {
+        // call at beginning of run        
         possibleWords = new HashSet<>();
         incorrectlyGuessedLetters = new HashSet<>();
         correctlyGuessedLetters = new HashSet<>();
@@ -75,6 +84,7 @@ public class GreedyStrategy implements GuessingStrategy {
     }
 
     private String getOnlyWord(Set<String> set) {
+        // quite unsafe/dirty method of getting the remaining word in a set
         if (set.size() == 1) {
             Iterator<String> iter = set.iterator();
             if (iter.hasNext()) {
@@ -88,6 +98,7 @@ public class GreedyStrategy implements GuessingStrategy {
     }
 
     private Character getOnlyChar(Set<Character> set) {
+        // quite unsafe/dirty method of getting the remaining char in a set
         if (set.size() == 1) {
             Iterator<Character> iter = set.iterator();
             if (iter.hasNext()) {
@@ -140,6 +151,7 @@ public class GreedyStrategy implements GuessingStrategy {
         switch(possibleWords.size()) {
             case 1:
             case 2:
+                // pick the only remaining word, or pick one of the two at random
                 Iterator<Word> iter = possibleWords.iterator();
                 return new GuessWord(iter.next().word);
             default:
