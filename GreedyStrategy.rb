@@ -13,7 +13,7 @@ class GreedyStrategy < GuessingStrategy
   end
 
   def nextGuess(game)
-    # load last known game state to prevent repeating relatively expensive dictionary operat
+
     if game.currentScore == 0
       # no guesses have been made yet
       # start possible words with words of right length
