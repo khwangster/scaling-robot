@@ -1,4 +1,9 @@
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+
 public class main {
 
     
@@ -21,26 +26,35 @@ public class main {
 //        System.out.println("Dictionary initiation time: " + ((endTime-startTime)/1000000000.0) + " seconds" );
         
         GreedyStrategy gs = new GreedyStrategy(d);
-        
-        
-        // array of sample input words
-        String[] secrets = new String[]{ 
-            "comaker", "cumulate", "eruptive", "factual", "monadism", "mus", 
-            "nagging", "oses", "remembered", "spodumenes", "stereoisomers",
-            "toxics", "trichromats", "triose", "uniformed"           
-        };
-        
+
+
+        int count = 0;
         float totalScore = 0;
         long overallStart = System.nanoTime();
         
-        for (String secret : secrets) {
-            HangmanGame game = new HangmanGame(secret, 5);
-            totalScore += run(gs, game);
+        // play hangman with every word from file
+        try {
+            FileReader fr = new FileReader("test_dict.txt");
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+            
+            while (line != null) {
+                if (line.length() > 0) {
+                    HangmanGame game = new HangmanGame(line, 5);
+                    totalScore += run(gs, game);
+                    count++;
+                }
+                line = br.readLine();
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
-        
+       
         long overallEnd = System.nanoTime() - overallStart;
-//        System.out.println("Average time per guess: " + (overallEnd/1000000000.0/secrets.length));
-//        System.out.println("Score: " + totalScore + " Average: " + (totalScore/secrets.length));
+
+//        System.out.println("Average time per guess: " + (overallEnd/1000000000.0/count));
+//        System.out.println("Score: " + totalScore + " Average: " + (totalScore/count));
         
 
     }
